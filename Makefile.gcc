@@ -1,0 +1,57 @@
+# Project: RPG
+# Makefile created by Dev-C++ 4.9.9.2
+
+CPP  = g++
+CC   = gcc
+RES  = 
+OBJ  = ArmorClass.o AttributesClass.o CharacterClass.o Functions.o InventoryClass.o Misc.o PowersClass.o RPGClass.o RPGObject.o WeaponClass.o $(RES)
+LINKOBJ  = ArmorClass.o AttributesClass.o CharacterClass.o Functions.o InventoryClass.o Misc.o PowersClass.o RPGClass.o RPGObject.o WeaponClass.o $(RES)
+LIBS =  -L"/usr/lib"  -lgmon  
+INCS =  -I"/usr/include"  -I"./include" 
+CXXINCS =  -I"/usr/include" -I"./include" 
+BIN  = lib/libRPG.a
+CXXFLAGS = $(CXXINCS)  
+CFLAGS = $(INCS)  
+RM = rm -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before lib/libRPG.a all-after
+
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(LINKOBJ)
+	ar r $(BIN) $(LINKOBJ)
+	ranlib $(BIN)
+
+ArmorClass.o: ArmorClass.cpp
+	$(CPP) -c ArmorClass.cpp -o ArmorClass.o $(CXXFLAGS)
+
+AttributesClass.o: AttributesClass.cpp
+	$(CPP) -c AttributesClass.cpp -o AttributesClass.o $(CXXFLAGS)
+
+CharacterClass.o: CharacterClass.cpp
+	$(CPP) -c CharacterClass.cpp -o CharacterClass.o $(CXXFLAGS)
+
+Functions.o: Functions.cpp
+	$(CPP) -c Functions.cpp -o Functions.o $(CXXFLAGS)
+
+InventoryClass.o: InventoryClass.cpp
+	$(CPP) -c InventoryClass.cpp -o InventoryClass.o $(CXXFLAGS)
+
+Misc.o: Misc.cpp
+	$(CPP) -c Misc.cpp -o Misc.o $(CXXFLAGS)
+
+PowersClass.o: PowersClass.cpp
+	$(CPP) -c PowersClass.cpp -o PowersClass.o $(CXXFLAGS)
+
+RPGClass.o: RPGClass.cpp
+	$(CPP) -c RPGClass.cpp -o RPGClass.o $(CXXFLAGS)
+
+RPGObject.o: RPGObject.cpp
+	$(CPP) -c RPGObject.cpp -o RPGObject.o $(CXXFLAGS)
+
+WeaponClass.o: WeaponClass.cpp
+	$(CPP) -c WeaponClass.cpp -o WeaponClass.o $(CXXFLAGS)
