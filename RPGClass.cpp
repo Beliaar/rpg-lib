@@ -3,6 +3,7 @@
 #include "Functions.h"
 #include <ctime> 
 #include <iostream>
+#include <stdlib.h>
 //---------------------------------------------------------------------------
 
 
