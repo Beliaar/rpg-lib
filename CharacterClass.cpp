@@ -1,174 +1,202 @@
+//---------------------------------------------------------------------------
+//RPG Library
+//A Library to manage rpg-objects
+//
+//This Library manages all characters, weapons ,armors ,inventories and powers
+//needed for an RPG
+//
+//Copyright (C) 2005  Karsten Bock
+//
+//This library is free software; you can redistribute it and/or
+//modify it under the terms of the GNU Lesser General Public
+//License as published by the Free Software Foundation; either
+//version 2.1 of the License, or (at your option) any later version.
+//
+//This library is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//Lesser General Public License for more details.
+//
+//You should have received a copy of the GNU Lesser General Public
+//License along with this library; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//---------------------------------------------------------------------------
 #include "CharacterClass.h"
-
+#include "Functions.h"
 #include <iostream>
+#include "RPGClass.h"
 namespace RPGCls
 {
 namespace CharacterCls
 {
 //---------------------------------------------------------------------------
-Character::Character(unsigned vID)
+Character::Character(unsigned argID,std::string argName, std::string argDescription) :  RPGObjectWithAttributes(argID,argName,argDescription)
 {
- uID=vID;
- sName="Nobody";
- uLeftHandWeaponID=0;
- uRightHandWeaponID=0;
- uLeftHandObjectID=0;
- uRightHandObjectID=0;
- uHeadArmorID=0;
- uChestArmorID=0;
- uArmArmorID=0;
- uHandArmorID=0;
- uLegArmorID=0;
- uFootArmorID=0;
+ LeftHandWeaponID=0;
+ RightHandWeaponID=0;
+ LeftHandObjectID=0;
+ RightHandObjectID=0;
+ HeadArmorID=0;
+ ShoulderArmorID=0;
+ ChestArmorID=0;
+ ArmArmorID=0;
+ HandArmorID=0;
+ LegArmorID=0;
+ FootArmorID=0;
 }
 //---------------------------------------------------------------------------
-Character::Character(unsigned vID,std::string vName)
+void Character::setLeftHandWeaponID(unsigned argLeftHandWeaponID)
 {
- uID=vID;
- sName=vName;
- uLeftHandWeaponID=0;
- uRightHandWeaponID=0;
- uLeftHandObjectID=0;
- uRightHandObjectID=0;
- uHeadArmorID=0;
- uShoulderArmorID=0;
- uChestArmorID=0;
- uArmArmorID=0;
- uHandArmorID=0;
- uLegArmorID=0;
- uFootArmorID=0;
+ LeftHandWeaponID = argLeftHandWeaponID;
 }
 //---------------------------------------------------------------------------
-void Character::SetLeftHandWeaponID(unsigned Value)
+unsigned Character::getLeftHandWeaponID()
 {
- uLeftHandWeaponID = Value;
+ return LeftHandWeaponID;
 }
 //---------------------------------------------------------------------------
-unsigned Character::GetLeftHandWeaponID()
+void Character::setRightHandWeaponID(unsigned argRightHandWeaponID)
 {
- return uLeftHandWeaponID;
+ RightHandWeaponID=argRightHandWeaponID;
 }
 //---------------------------------------------------------------------------
-void Character::SetRightHandWeaponID(unsigned Value)
+unsigned Character::getRightHandWeaponID()
 {
- uRightHandWeaponID=Value;
-}
-//---------------------------------------------------------------------------
-unsigned Character::GetRightHandWeaponID()
-{
- return uRightHandWeaponID;
+ return RightHandWeaponID;
 }
 //---------------------------------------------------------------------------
 
-void Character::SetLeftHandObjectID(unsigned Value)
+void Character::setLeftHandObjectID(unsigned argLeftHandObjectID)
 {
- uLeftHandObjectID=Value;
+ LeftHandObjectID=argLeftHandObjectID;
 }
 //---------------------------------------------------------------------------
-unsigned Character::GetLeftHandObjectID()
+unsigned Character::getLeftHandObjectID()
 {
- return uLeftHandObjectID;
+ return LeftHandObjectID;
 }
 //---------------------------------------------------------------------------
-void Character::SetRightHandObjectID(unsigned Value)
+void Character::setRightHandObjectID(unsigned argRightHandObjectID)
 {
- uRightHandObjectID=Value;
+ RightHandObjectID=argRightHandObjectID;
 }
 //---------------------------------------------------------------------------
-unsigned Character::GetRightHandObjectID()
+unsigned Character::getRightHandObjectID()
 {
- return uRightHandObjectID;
+ return RightHandObjectID;
 }
 //---------------------------------------------------------------------------
 
-void Character::SetHeadArmorID(unsigned Value)
+void Character::setHeadArmorID(unsigned argHeadArmorID)
 {
- uHeadArmorID=Value;
+ HeadArmorID=argHeadArmorID;
 }
 //---------------------------------------------------------------------------
-unsigned Character::GetHeadArmorID()
+unsigned Character::getHeadArmorID()
 {
- return uHeadArmorID;
+ return HeadArmorID;
 }
 //---------------------------------------------------------------------------
-void Character::SetShoulderArmorID(unsigned Value)
+void Character::setShoulderArmorID(unsigned argShoulderArmorID)
 {
- uShoulderArmorID=Value;
+ ShoulderArmorID=argShoulderArmorID;
 }
 //---------------------------------------------------------------------------
-unsigned Character::GetShoulderArmorID()
+unsigned Character::getShoulderArmorID()
 {
- return uShoulderArmorID;
+ return ShoulderArmorID;
 }
 //---------------------------------------------------------------------------
-void Character::SetChestArmorID(unsigned Value)
+void Character::setChestArmorID(unsigned argChestArmorID)
 {
- uChestArmorID=Value;
+ ChestArmorID=argChestArmorID;
 }
 //---------------------------------------------------------------------------
-unsigned Character::GetChestArmorID()
+unsigned Character::getChestArmorID()
 {
- return uChestArmorID;
+ return ChestArmorID;
 }
 //---------------------------------------------------------------------------
-void Character::SetArmArmorID(unsigned Value)
+void Character::setArmArmorID(unsigned argArmArmorID)
 {
- uArmArmorID=Value;
+ ArmArmorID=argArmArmorID;
 }
 //---------------------------------------------------------------------------
-unsigned Character::GetArmArmorID()
+unsigned Character::getArmArmorID()
 {
- return uArmArmorID;
+ return ArmArmorID;
 }
 //---------------------------------------------------------------------------
-void Character::SetHandArmorID(unsigned Value)
+void Character::setHandArmorID(unsigned argHandArmorID)
 {
- uHandArmorID=Value;
+ HandArmorID=argHandArmorID;
 }
 //---------------------------------------------------------------------------
-unsigned Character::GetHandArmorID()
+unsigned Character::getHandArmorID()
 {
- return uHandArmorID;
+ return HandArmorID;
 }
 //---------------------------------------------------------------------------
-void Character::SetLegArmorID(unsigned Value)
+void Character::setLegArmorID(unsigned argLegArmorID)
 {
- uLegArmorID=Value;
+ LegArmorID=argLegArmorID;
 }
 //---------------------------------------------------------------------------
-unsigned Character::GetLegArmorID()
+unsigned Character::getLegArmorID()
 {
- return uLegArmorID;
+ return LegArmorID;
  }
 //---------------------------------------------------------------------------
-void Character::SetFootArmorID(unsigned Value)
+void Character::setFootArmorID(unsigned argFootArmorID)
 {
- uFootArmorID=Value;
+ FootArmorID=argFootArmorID;
 }
 //---------------------------------------------------------------------------
-unsigned Character::GetFootArmorID()
+unsigned Character::getFootArmorID()
 {
- return uFootArmorID;
+ return FootArmorID;
 }
 //---------------------------------------------------------------------------
-void Character::SetAttributes(RPGCls::AttributesCls::Attributes Value)
+void Character::setInventoryID(unsigned argInventoryID)
 {
- attrChar_Attributes=Value;
+ InventoryID=argInventoryID;
 }
 //---------------------------------------------------------------------------
-RPGCls::AttributesCls::Attributes *Character::GetAttributes()
+unsigned Character::getInventoryID()
 {
- return &attrChar_Attributes;
+ return InventoryID;
 }
 //---------------------------------------------------------------------------
-void Character::SetInventoryID(unsigned Value)
+void Character::addPower(unsigned argPowerID)
 {
- uInventoryID=Value;
+    Powers.push_back(argPowerID);
 }
 //---------------------------------------------------------------------------
-unsigned Character::GetInventoryID()
+void Character::deletePower(std::vector<unsigned>::iterator argToDelete)
 {
- return uInventoryID;
+    Powers.erase(argToDelete);
+}
+//---------------------------------------------------------------------------
+std::vector<unsigned> Character::getPowers()
+{
+    return Powers;
+}
+//---------------------------------------------------------------------------
+bool Character::ContainsPower(unsigned argPowerID)
+{
+ std::vector<unsigned>::iterator start=Powers.begin();
+ std::vector<unsigned>::iterator end=Powers.end();
+ std::vector<unsigned>::iterator iter=find(start,end,argPowerID);
+ if(iter!= end)
+ {
+    return true;
+ }
+ return false;
+}
+//---------------------------------------------------------------------------
+void Character::setAttributes(RPGCls::AttributesCls::Attributes argAttributes)
+{
+    RPGObjectWithAttributes::setAttributes(argAttributes);
 }
 //---------------------------------------------------------------------------
 }//CharacterCls

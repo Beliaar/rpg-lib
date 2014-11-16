@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_layout_file>
+<CodeBlocks_layout_file>
+	<File name="ArmorClass.cpp" open="0" top="0">
+		<Cursor position="4441" topLine="124"/>
+	</File>
+	<File name="AttributesClass.cpp" open="0" top="0">
+		<Cursor position="1312" topLine="19"/>
+	</File>
+	<File name="CharacterClass.cpp" open="0" top="0">
+		<Cursor position="1417" topLine="162"/>
+	</File>
+	<File name="Functions.cpp" open="0" top="0">
+		<Cursor position="569" topLine="0"/>
+	</File>
+	<File name="InventoryClass.cpp" open="0" top="0">
+		<Cursor position="4573" topLine="93"/>
+	</File>
+	<File name="Misc.cpp" open="0" top="0">
+		<Cursor position="1393" topLine="15"/>
+	</File>
+	<File name="PowersClass.cpp" open="1" top="1">
+		<Cursor position="6790" topLine="140"/>
+	</File>
+	<File name="RPGClass.cpp" open="0" top="0">
+		<Cursor position="23887" topLine="0"/>
+	</File>
+	<File name="RPGObject.cpp" open="0" top="0">
+		<Cursor position="2126" topLine="35"/>
+	</File>
+	<File name="WeaponClass.cpp" open="0" top="0">
+		<Cursor position="4254" topLine="84"/>
+	</File>
+	<File name="include\ArmorClass.h" open="0" top="0">
+		<Cursor position="3009" topLine="47"/>
+	</File>
+	<File name="include\AttributesClass.h" open="0" top="0">
+		<Cursor position="2775" topLine="67"/>
+	</File>
+	<File name="include\CharacterClass.h" open="0" top="0">
+		<Cursor position="657" topLine="1"/>
+	</File>
+	<File name="include\InventoryClass.h" open="0" top="0">
+		<Cursor position="1400" topLine="18"/>
+	</File>
+	<File name="include\Misc.h" open="0" top="0">
+		<Cursor position="1190" topLine="13"/>
+	</File>
+	<File name="include\PowersClass.h" open="0" top="0">
+		<Cursor position="2530" topLine="48"/>
+	</File>
+	<File name="include\RPGClass.h" open="0" top="0">
+		<Cursor position="3448" topLine="81"/>
+	</File>
+	<File name="include\RPGObject.h" open="0" top="0">
+		<Cursor position="1834" topLine="23"/>
+	</File>
+	<File name="include\WeaponClass.h" open="0" top="0">
+		<Cursor position="3127" topLine="56"/>
+	</File>
+	<Expand folder="/Sources"/>
+</CodeBlocks_layout_file>

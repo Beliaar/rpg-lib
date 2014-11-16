@@ -1,61 +1,65 @@
 //---------------------------------------------------------------------------
+//RPG Library
+//A Library to manage rpg-objects
+//
+//This Library manages all characters, weapons ,armors ,inventories and powers
+//needed for an RPG
+//
+//Copyright (C) 2005  Karsten Bock
+//
+//This library is free software; you can redistribute it and/or
+//modify it under the terms of the GNU Lesser General Public
+//License as published by the Free Software Foundation; either
+//version 2.1 of the License, or (at your option) any later version.
+//
+//This library is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//Lesser General Public License for more details.
+//
+//You should have received a copy of the GNU Lesser General Public
+//License along with this library; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//---------------------------------------------------------------------------
 #include "RPGClass.h"
 #include "Functions.h"
-#include <ctime> 
+#include <ctime>
 #include <iostream>
-#include <stdlib.h>
 //---------------------------------------------------------------------------
 
 
 using namespace std;
 namespace RPGCls
 {
-
+RPG * RPG::Instance = 0;
+bool RPG::IsLocked = false;
 //---------------------------------------------------------------------------
 RPG::RPG()
 {
-  uCharacterHandles=0;
-  uWeaponHandles=0;
-  uArmorHandles=0;
-  uDamageTypeHandles=0;
-  uAmmoTypeHandles=0;
-  uWeaponTypeHandles=0;
-  uInventoryHandles=0;
-  iQuiet=1;
- vCharacters.clear();
- vWeapons.clear();
- WeaponCls::Weapon wpnNone(uWeaponHandles++);
- //Keine Waffe - wird benutzt wenn ID nicht bekannt
- 
- //AttributesCls::Attributes wpnNoneAttribs;
- wpnNone.SetName("none");
- wpnNone.SetDamagePerHit(0);
-// wpnNone.SetNeededAttributes(wpnNoneAttribs);
-// wpnNone.ID=;
- vWeapons.push_back(wpnNone);
- InventoryCls::Inventory invNone(uInventoryHandles++);
- vInventories.push_back(invNone);
- 
+ Language="english";
+ ClearAll();
+ Quiet=true;
+
 }
 //---------------------------------------------------------------------------
-WeaponCls::Weapon *RPG::GetWeaponByID(unsigned ID)
+WeaponCls::Weapon *RPG::getWeaponByID(unsigned argID)
 {
 
- for (unsigned i=0; i < vWeapons.size();i++)
+ for (unsigned i=0; i < Weapons.size();i++)
     {
-     if( ID == vWeapons[i].GetID())
-     return &vWeapons[i];
+     if( argID == Weapons[i].getID())
+     return &Weapons[i];
     }
-return &vWeapons[0];
+return &Weapons[0];
 
 }
 //---------------------------------------------------------------------------
-CharacterCls::Character *RPG::GetCharacterByID(unsigned ID)
+CharacterCls::Character *RPG::getCharacterByID(unsigned argID)
 {
- for (unsigned i=0; i < vCharacters.size();i++)
+ for (unsigned i=0; i < Characters.size();i++)
     {
-     if( ID == vCharacters[i].GetID())
-     return &vCharacters[i];
+     if( argID == Characters[i].getID())
+     return &Characters[i];
     }
 return NULL;
 }
@@ -64,347 +68,566 @@ attackResult RPG::attack(unsigned attackingCharID,unsigned attackedCharID,unsign
 {
  srand(time(NULL));
  attackResult arRet;
- CharacterCls::Character *attackingChar=GetCharacterByID(attackingCharID);
- CharacterCls::Character *attackedChar=GetCharacterByID(attackedCharID);
+ CharacterCls::Character *attackingChar=getCharacterByID(attackingCharID);
+ CharacterCls::Character *attackedChar=getCharacterByID(attackedCharID);
  //AttributesCls::Attributes attackingAttrib;
- //attackingAttrib=attackingChar->GetAttributes();
- 
- WeaponCls::Weapon *RightWeapAttackingChar = GetWeaponByID(attackingChar->GetRightHandWeaponID());
- WeaponCls::Weapon *LeftWeapAttackingChar = GetWeaponByID(attackingChar->GetLeftHandWeaponID());
+ //attackingAttrib=attackingChar->getAttributes();
 
- WeaponCls::Weapon *RightWeapAttackedChar = GetWeaponByID(attackingChar->GetRightHandWeaponID());
- WeaponCls::Weapon *LeftWeapAttackedChar = GetWeaponByID(attackingChar->GetLeftHandWeaponID());
+ WeaponCls::Weapon *RightWeapAttackingChar = getWeaponByID(attackingChar->getRightHandWeaponID());
+ WeaponCls::Weapon *LeftWeapAttackingChar = getWeaponByID(attackingChar->getLeftHandWeaponID());
+
+ WeaponCls::Weapon *RightWeapAttackedChar = getWeaponByID(attackingChar->getRightHandWeaponID());
+ WeaponCls::Weapon *LeftWeapAttackedChar = getWeaponByID(attackingChar->getLeftHandWeaponID());
 
  //Chance to hit or chance to evade= dexterity - attacked dexterity* (strength-(weight of weapon/2)) + randon number between -50 and 50
 
- int iTCAttacking=attackingChar->GetAttributes()->GetDex() * (attackingChar->GetAttributes()->GetStr()- (RightWeapAttackingChar->GetWeight() /2)) + ((rand() % 100) -50);
- int iTCAttacked=attackedChar->GetAttributes()->GetDex() * (attackedChar->GetAttributes()->GetStr()  - (RightWeapAttackingChar->GetWeight() /2)) + ((rand() % 100) -50);
- int abzTPwA;
- int abzTP;
- if(!iQuiet)
+ int iTCAttacking=attackingChar->getAttributes()->getDexterity() * (attackingChar->getAttributes()->getStrength()- (RightWeapAttackingChar->getWeight() /2)) + ((rand() % 100) -50);
+ int iTCAttacked=attackedChar->getAttributes()->getDexterity() * (attackedChar->getAttributes()->getStrength()  - (RightWeapAttackingChar->getWeight() /2)) + ((rand() % 100) -50);
+ int abzHitPointswA;
+ int abzHitPoints;
+ if(!Quiet)
  {
-        cout << "[CPP] Right hand: Chance to hit :" << iTCAttacking << "\r\n";
-        cout << "[CPP] Right hand: Chance to evade :" << iTCAttacked << "\r\n";
+        string sOut=translateText("Right hand: Chance to hit : $ChanceToHit",Language);
+        sOut.replace(sOut.find("$ChanceToHit"),12, convertIntegerToString(iTCAttacking));
+        cout << "[CPP] " << sOut << "\r\n";
+        sOut=translateText("Right hand: Chance to evade : $ChanceToEvade",Language);
+        sOut.replace(sOut.find("$ChanceToEvade"),12, convertIntegerToString(iTCAttacked));
+        cout << "[CPP] " << sOut << "\r\n";
  }
  if(iTCAttacked + ((iTCAttacked * uAimAt) /100 > iTCAttacking ))
  {
-        arRet.bHit=0;
-        arRet.iDmg=0;
-        arRet.iDmgwA=0;
-        arRet.bAttackedDead=false;
+        arRet.Hitted=false;
+        arRet.Damage=0;
+        arRet.DamageWithoutArmor=0;
+        arRet.AttackedDead=false;
  }
  else
  {
         //Schadenspunkte=Waffenschaden * (Stärke-(Waffengewicht/2))
-        double dMultiply=1;
+        double Multiply=1;
         //AttributesCls::Attributes *attackedAttrib;
         //attackedAttrib=&attackedChar->Char_Attributes;
-        //if(GetArmorByID(attackedChar->ArmorID)->
+        //if(getArmorByID(attackedChar->ArmorID)->
 
         unsigned iAttackedArmorID;
         switch (uAimAt)
         {
-        case AIM_AT_CHEST     : iAttackedArmorID=attackedChar->GetChestArmorID();break;
-        case AIM_AT_HEAD      : iAttackedArmorID=attackedChar->GetHeadArmorID();break;
-        case AIM_AT_SHOULDER  : iAttackedArmorID=attackedChar->GetShoulderArmorID();break;
-        case AIM_AT_ARM      : iAttackedArmorID=attackedChar->GetArmArmorID();break;
-        case AIM_AT_LEG      : iAttackedArmorID=attackedChar->GetLegArmorID();break;
-        case AIM_AT_HAND      : iAttackedArmorID=attackedChar->GetHandArmorID();break;
-        case AIM_AT_FOOT      : iAttackedArmorID=attackedChar->GetFootArmorID();break;
+        case AIM_AT_CHEST     : iAttackedArmorID=attackedChar->getChestArmorID();break;
+        case AIM_AT_HEAD      : iAttackedArmorID=attackedChar->getHeadArmorID();break;
+        case AIM_AT_SHOULDER  : iAttackedArmorID=attackedChar->getShoulderArmorID();break;
+        case AIM_AT_ARM      : iAttackedArmorID=attackedChar->getArmArmorID();break;
+        case AIM_AT_LEG      : iAttackedArmorID=attackedChar->getLegArmorID();break;
+        case AIM_AT_HAND      : iAttackedArmorID=attackedChar->getHandArmorID();break;
+        case AIM_AT_FOOT      : iAttackedArmorID=attackedChar->getFootArmorID();break;
         }
-        if(GetArmorByID(iAttackedArmorID)->ContainsWeakness(RightWeapAttackingChar->GetDamageTypeID()))
+        if(getArmorByID(iAttackedArmorID)->containsWeakness(RightWeapAttackingChar->getDamageTypeID()))
         {
-           cout << RightWeapAttackingChar->GetName() << " does more damage to " << GetArmorByID(iAttackedArmorID)->GetName();                                                                                                 
-           dMultiply=0.5;   
-        }                                                                                
+           string sOut=translateText("$AttackingRightWeaponName does more damage to $AttackedArmorName",Language);
+           sOut.replace(sOut.find("$AttackingRightWeaponName"),24, RightWeapAttackingChar->getName());
+           sOut.replace(sOut.find("$AttackedArmorName"),18, getArmorByID(iAttackedArmorID)->getName());
+           cout << sOut;
+//         cout << RightWeapAttackingChar->getName() << " does more damage to " << getArmorByID(iAttackedArmorID)->getName();
+           Multiply=0.5;
+        }
 
-        if(GetArmorByID(iAttackedArmorID)->ContainsStrength(RightWeapAttackingChar->GetDamageTypeID()))
+        if(getArmorByID(iAttackedArmorID)->containsStrength(RightWeapAttackingChar->getDamageTypeID()))
         {
-           cout << RightWeapAttackingChar->GetName() << " does lesser damage to " << GetArmorByID(iAttackedArmorID)->GetName();                                                                                                 
-           dMultiply=2;   
-        }  
-        // int abzTP;
-        abzTPwA=RightWeapAttackingChar->GetDamagePerHit() *(attackingChar->GetAttributes()->GetStr() - (RightWeapAttackingChar->GetWeight() /2));                                                                     
-        abzTP=RightWeapAttackingChar->GetDamagePerHit() *(attackingChar->GetAttributes()->GetStr() - (RightWeapAttackingChar->GetWeight() /2)) - (GetArmorByID(iAttackedArmorID)->GetArmorValue() * dMultiply);
+           string sOut=translateText("$AttackingRightWeaponName does lesser damage to $AttackedArmorName",Language);
+           sOut.replace(sOut.find("$AttackingRightWeaponName"),24, RightWeapAttackingChar->getName());
+           sOut.replace(sOut.find("$AttackedArmorName"),18, getArmorByID(iAttackedArmorID)->getName());
+           cout << sOut;
+           //cout << RightWeapAttackingChar->getName() << " does lesser damage to " << getArmorByID(iAttackedArmorID)->getName();
+           Multiply=2;
+        }
+        // int abzHitPoints;
+        abzHitPointswA=RightWeapAttackingChar->getDamagePerHit() *(attackingChar->getAttributes()->getStrength() - (RightWeapAttackingChar->getWeight() /2));
+        abzHitPoints=int(RightWeapAttackingChar->getDamagePerHit() *(attackingChar->getAttributes()->getStrength() - (RightWeapAttackingChar->getWeight() /2)) - (getArmorByID(iAttackedArmorID)->getArmorValue() * Multiply));
  }
- iTCAttacking=attackingChar->GetAttributes()->GetDex() * (attackingChar->GetAttributes()->GetStr()- (LeftWeapAttackingChar->GetWeight() /2)) + ((rand() % 100) -50);
- iTCAttacked=attackedChar->GetAttributes()->GetDex() * (attackedChar->GetAttributes()->GetStr()  - (LeftWeapAttackingChar->GetWeight() /2)) + ((rand() % 100) -50);
- if(!iQuiet)
+ iTCAttacking=attackingChar->getAttributes()->getDexterity() * (attackingChar->getAttributes()->getStrength()- (LeftWeapAttackingChar->getWeight() /2)) + ((rand() % 100) -50);
+ iTCAttacked=attackedChar->getAttributes()->getDexterity() * (attackedChar->getAttributes()->getStrength()  - (LeftWeapAttackingChar->getWeight() /2)) + ((rand() % 100) -50);
+ if(!Quiet)
  {
-        cout << "[CPP] Right hand: Chance to hit :" << iTCAttacking << "\r\n";
-        cout << "[CPP] Right hand: Chance to evade :" << iTCAttacked << "\r\n";
+        string sOut=translateText("Left hand: Chance to hit : $ChanceToHit",Language);
+        sOut.replace(sOut.find("$ChanceToHit"),12, convertIntegerToString(iTCAttacking));
+        cout << "[CPP] " << sOut << "\r\n";
+        sOut=translateText("Left hand: Chance to evade : $ChanceToEvade",Language);
+        sOut.replace(sOut.find("$ChanceToEvade"),12, convertIntegerToString(iTCAttacked));
+        cout << "[CPP] " << sOut << "\r\n";
  }
  if(iTCAttacked + ((iTCAttacked * uAimAt) /100 > iTCAttacking ))
  {
-        arRet.bHit=0;
-        arRet.iDmg=0;
-        arRet.iDmgwA=0;
-        arRet.bAttackedDead=true;
+        arRet.Hitted=false;
+        arRet.Damage=0;
+        arRet.DamageWithoutArmor=0;
+        arRet.AttackedDead=true;
  }
  else
  {
         //Schadenspunkte=Waffenschaden * (Stärke-(Waffengewicht/2))
-        double dMultiply=1;
+        double Multiply=1;
         //AttributesCls::Attributes *attackedAttrib;
         //attackedAttrib=&attackedChar->Char_Attributes;
-        //if(GetArmorByID(attackedChar->ArmorID)->
+        //if(getArmorByID(attackedChar->ArmorID)->
 
         unsigned iAttackedArmorID;
         switch (uAimAt)
         {
-        case AIM_AT_CHEST     : iAttackedArmorID=attackedChar->GetChestArmorID();break;
-        case AIM_AT_HEAD      : iAttackedArmorID=attackedChar->GetHeadArmorID();break;
-        case AIM_AT_SHOULDER  : iAttackedArmorID=attackedChar->GetShoulderArmorID();break;
-        case AIM_AT_ARM      : iAttackedArmorID=attackedChar->GetArmArmorID();break;
-        case AIM_AT_LEG      : iAttackedArmorID=attackedChar->GetLegArmorID();break;
-        case AIM_AT_HAND      : iAttackedArmorID=attackedChar->GetHandArmorID();break;
-        case AIM_AT_FOOT      : iAttackedArmorID=attackedChar->GetFootArmorID();break;
+        case AIM_AT_CHEST     : iAttackedArmorID=attackedChar->getChestArmorID();break;
+        case AIM_AT_HEAD      : iAttackedArmorID=attackedChar->getHeadArmorID();break;
+        case AIM_AT_SHOULDER  : iAttackedArmorID=attackedChar->getShoulderArmorID();break;
+        case AIM_AT_ARM      : iAttackedArmorID=attackedChar->getArmArmorID();break;
+        case AIM_AT_LEG      : iAttackedArmorID=attackedChar->getLegArmorID();break;
+        case AIM_AT_HAND      : iAttackedArmorID=attackedChar->getHandArmorID();break;
+        case AIM_AT_FOOT      : iAttackedArmorID=attackedChar->getFootArmorID();break;
         }
-        if(GetArmorByID(iAttackedArmorID)->ContainsWeakness(LeftWeapAttackingChar->GetDamageTypeID()))
+        if(getArmorByID(iAttackedArmorID)->containsWeakness(LeftWeapAttackingChar->getDamageTypeID()))
         {
-           cout << LeftWeapAttackingChar->GetName() << " does more damage to " << GetArmorByID(iAttackedArmorID)->GetName();                                                                                                 
-           dMultiply=0.5;   
-        }                                                                                
+           //
+           string sOut=translateText("$AttackingLeftWeaponName does more damage to $AttackedArmorName",Language);
+           sOut.replace(sOut.find("$AttackingLeftWeaponName"),24, LeftWeapAttackingChar->getName());
+           sOut.replace(sOut.find("$AttackedArmorName"),18, getArmorByID(iAttackedArmorID)->getName());
+           cout << sOut; //LeftWeapAttackingChar->getName() << " does more damage to " << getArmorByID(iAttackedArmorID)->getName();
+           Multiply=0.5;
+        }
 
-        if(GetArmorByID(iAttackedArmorID)->ContainsStrength(LeftWeapAttackingChar->GetDamageTypeID()))
+        if(getArmorByID(iAttackedArmorID)->containsStrength(LeftWeapAttackingChar->getDamageTypeID()))
         {
-           cout << LeftWeapAttackingChar->GetName() << " does lesser damage to " << GetArmorByID(iAttackedArmorID)->GetName();                                                                                                 
-           dMultiply=2;   
-        }  
-        // int abzTP;
+           string sOut=translateText("$AttackingLeftWeaponName does lesser damage to $AttackedArmorName",Language);
+           sOut.replace(sOut.find("$AttackingLeftWeaponName"),24, LeftWeapAttackingChar->getName());
+           sOut.replace(sOut.find("$AttackedArmorName"),18, getArmorByID(iAttackedArmorID)->getName());
+           cout << sOut;
+           //cout << LeftWeapAttackingChar->getName() << " does lesser damage to " << getArmorByID(iAttackedArmorID)->getName();
+           Multiply=2;
+        }
+        // int abzHitPoints;
 
-        abzTPwA+=LeftWeapAttackingChar->GetDamagePerHit() *(attackingChar->GetAttributes()->GetStr() - (LeftWeapAttackingChar->GetWeight() /2));                                                                     
-        abzTP+=LeftWeapAttackingChar->GetDamagePerHit() *(attackingChar->GetAttributes()->GetStr() - (LeftWeapAttackingChar->GetWeight() /2)) - (GetArmorByID(iAttackedArmorID)->GetArmorValue() * dMultiply);
-        
-        arRet.bHit=1;
-        arRet.iDmg=abzTP;
-        arRet.iDmgwA=abzTPwA;
-        attackedChar->GetAttributes()->SetTP(attackedChar->GetAttributes()->GetTP() -abzTP);
-        cout << attackingChar->GetAttributes()->GetTP() << endl;
-        if(attackedChar->GetAttributes()->GetTP() <= 0)
+        abzHitPointswA+=LeftWeapAttackingChar->getDamagePerHit() *(attackingChar->getAttributes()->getStrength() - (LeftWeapAttackingChar->getWeight() /2));
+        abzHitPoints+=int(LeftWeapAttackingChar->getDamagePerHit() *(attackingChar->getAttributes()->getStrength() - (LeftWeapAttackingChar->getWeight() /2)) - (getArmorByID(iAttackedArmorID)->getArmorValue() * Multiply));
+
+        arRet.Hitted=true;
+        arRet.Damage=abzHitPoints;
+        arRet.DamageWithoutArmor=abzHitPointswA;
+        attackedChar->getAttributes()->setHitPoints(attackedChar->getAttributes()->getHitPoints() -abzHitPoints);
+        cout << attackingChar->getAttributes()->getHitPoints() << endl;
+        if(attackedChar->getAttributes()->getHitPoints() <= 0)
         {
-         arRet.bAttackedDead=1;
+         arRet.AttackedDead=true;
         }
         else
         {
-         arRet.bAttackedDead=0;
+         arRet.AttackedDead=false;
         }
  }
 
  return arRet;
 }
 //---------------------------------------------------------------------------
-int RPG::addWeapon(string asName,int wTypeID,int DamagePerHit/*,AttributesCls::Attributes NeededAttr*/,int Weight)
+int RPG::addWeapon(string argName,int wTypeID,int DamagePerHit/*,AttributesCls::Attributes NeededAttr*/,int Weight)
 {
- unsigned iNewID=uWeaponHandles++;
- WeaponCls::Weapon wTemp(iNewID);
- wTemp.SetName(asName);
- wTemp.SetTypeID(wTypeID);
- wTemp.SetDamagePerHit(DamagePerHit);
- //wTemp.SetNeededAttributes(NeededAttr);
- //wTemp.ID=uWeaponHandles++;
- wTemp.SetWeight(Weight);
-  
- vWeapons.push_back(wTemp);
- return iNewID;//wTemp.GetID();
+ unsigned NewID=WeaponHandles++;
+ WeaponCls::Weapon wTemp(NewID,InventoryObjectHandles++);
+ wTemp.setName(argName);
+ wTemp.setTypeID(wTypeID);
+ wTemp.setDamagePerHit(DamagePerHit);
+ //wTemp.setNeededAttributes(NeededAttr);
+ //wTemp.ID=WeaponHandles++;
+ wTemp.setWeight(Weight);
+
+ Weapons.push_back(wTemp);
+ InventoryObjects.push_back(&wTemp);
+ return NewID;//wTemp.getID();
 }
 //---------------------------------------------------------------------------
-int RPG::addCharacter(std::string sName)
+int RPG::addCharacter(std::string argName)
 {
- unsigned iNewID=uCharacterHandles++;
- CharacterCls::Character tempChar(iNewID);
- tempChar.SetName(sName);
- vCharacters.push_back(tempChar);
- return iNewID;//tempChar.GetID();
+ unsigned NewID=CharacterHandles++;
+ CharacterCls::Character tempChar(NewID);
+ tempChar.setName(argName);
+ Characters.push_back(tempChar);
+ return NewID;//tempChar.getID();
 }
 //---------------------------------------------------------------------------
-int RPG::addDamageType(std::string sName,std::string  sDescription)
+int RPG::addDamageType(std::string argName,std::string  argDescription)
 {
- unsigned iNewID=uDamageTypeHandles++;
-// cout << iNewID << endl;
- RPG_Misc::DamageType tempDmgType(iNewID);
- tempDmgType.SetName(sName);
- tempDmgType.SetDescription(sDescription);
- vDamageTypes.push_back(tempDmgType);
- return iNewID;//tempDmgType.GetID();
+ unsigned NewID=DamageTypeHandles++;
+// cout << NewID << endl;
+ RPG_Misc::DamageType tempDmgType(NewID,argName,argDescription);
+ DamageTypes.push_back(tempDmgType);
+ return NewID;//tempDmgType.getID();
 }
 //---------------------------------------------------------------------------
-int RPG::addAmmoType(std::string sName,std::string sDescription,unsigned DamageTypeID)
+int RPG::addAmmoType(std::string argName,std::string argDescription,unsigned argDamageTypeID)
 {
- unsigned iNewID=uAmmoTypeHandles++;
- WeaponCls::AmmoType tempAmmoType(iNewID);
-// tempAmmoType.SetID();
- tempAmmoType.SetName(sName);
- tempAmmoType.SetDescription(sDescription);
- tempAmmoType.SetDamageTypeID(DamageTypeID);
- vAmmoTypes.push_back(tempAmmoType);
- return iNewID;//tempAmmoType.GetID();
+ unsigned NewID=AmmoTypeHandles++;
+ WeaponCls::AmmoType tempAmmoType(NewID);
+// tempAmmoType.setID();
+ tempAmmoType.setName(argName);
+ tempAmmoType.setDescription(argDescription);
+ tempAmmoType.setDamageTypeID(argDamageTypeID);
+ AmmoTypes.push_back(tempAmmoType);
+ return NewID;//tempAmmoType.getID();
 }
 //---------------------------------------------------------------------------
-int RPG::addWeaponType(std::string sName,std::string sDescription,unsigned AmmoTypeID)
+int RPG::addWeaponType(std::string argName,std::string argDescription,unsigned argAmmoTypeID)
 {
- unsigned iNewID=uWeaponTypeHandles++;
- WeaponCls::WeaponType tempWeaponType(iNewID);
-// tempWeaponType.ID=uWeaponTypeHandles++;
- tempWeaponType.SetName(sName);
- tempWeaponType.SetDescription(sDescription);
- tempWeaponType.SetAmmoTypeID(AmmoTypeID);
- vWeaponTypes.push_back(tempWeaponType);
- return iNewID;//tempWeaponType.GetID();
+ unsigned NewID=WeaponTypeHandles++;
+ WeaponCls::WeaponType tempWeaponType(NewID);
+// tempWeaponType.ID=WeaponTypeHandles++;
+ tempWeaponType.setName(argName);
+ tempWeaponType.setDescription(argDescription);
+ tempWeaponType.setAmmoTypeID(argAmmoTypeID);
+ WeaponTypes.push_back(tempWeaponType);
+ return NewID;//tempWeaponType.getID();
 }
 //---------------------------------------------------------------------------
-int RPG::addArmor(std::string asName,std::string sDescription)
+int RPG::addArmor(std::string aargName,std::string argDescription)
 {
- unsigned iNewID = uArmorHandles++;
- ArmorCls::Armor tempArmor(iNewID);
- tempArmor.SetName(asName);
- tempArmor.SetDescription(sDescription);
- vArmors.push_back(tempArmor);
- return iNewID;//tempArmor.GetID();
+ unsigned NewID = ArmorHandles++;
+ ArmorCls::Armor tempArmor(NewID,InventoryObjectHandles++);
+ tempArmor.setName(aargName);
+ tempArmor.setDescription(argDescription);
+ Armors.push_back(tempArmor);
+ InventoryObjects.push_back(&tempArmor);
+ return NewID;//tempArmor.getID();
 }
 //---------------------------------------------------------------------------
-int RPG::addInventory(std::string sName,std::string sDescription,int iMaxStorage)
+int RPG::addInventory(std::string argName,std::string argDescription,int argiMaxStorage)
 {
- unsigned iNewID = uInventoryHandles++;
- InventoryCls::Inventory tempInventory(iNewID);
- tempInventory.SetName(sName);
- tempInventory.SetDescription(sDescription);
- tempInventory.SetMaxStorage(iMaxStorage);
- vInventories.push_back(tempInventory);
- return iNewID;
+ unsigned NewID = InventoryHandles++;
+ InventoryCls::Inventory tempInventory(NewID,InventoryObjectHandles++,argName,argDescription,argiMaxStorage);
+ Inventories.push_back(tempInventory);
+ InventoryObjects.push_back(&tempInventory);
+ return NewID;
  }
 //---------------------------------------------------------------------------
-ArmorCls::Armor *RPG::GetArmorByID(unsigned ID)
+ArmorCls::Armor *RPG::getArmorByID(unsigned argID)
 {
- for (unsigned i=0; i < vArmors.size();i++)
+ for (unsigned i=0; i < Armors.size();i++)
     {
-     if( ID == vArmors[i].GetID())
-     return &vArmors[i];
+     if( argID == Armors[i].getID())
+     return &Armors[i];
     }
 return NULL;
 }
 //---------------------------------------------------------------------------
-RPG_Misc::DamageType *RPG::GetDamageTypeByID(unsigned ID)
+RPG_Misc::DamageType *RPG::getDamageTypeByID(unsigned argID)
 {
- for (unsigned i=0; i < vDamageTypes.size();i++)
+ for (unsigned i=0; i < DamageTypes.size();i++)
     {
-     if( ID == vDamageTypes[i].GetID())
-     return &vDamageTypes[i];
+     if( argID == DamageTypes[i].getID())
+     return &DamageTypes[i];
     }
 return NULL;
 }
 //---------------------------------------------------------------------------
-WeaponCls::AmmoType *RPG::GetAmmoTypeByID(unsigned ID)
+WeaponCls::AmmoType *RPG::getAmmoTypeByID(unsigned argID)
 {
- for (unsigned i=0; i < vAmmoTypes.size();i++)
+ for (unsigned i=0; i < AmmoTypes.size();i++)
     {
-     if( ID == vAmmoTypes[i].GetID())
-     return &vAmmoTypes[i];
+     if( argID == AmmoTypes[i].getID())
+     return &AmmoTypes[i];
     }
 return NULL;
 }
 //---------------------------------------------------------------------------
-WeaponCls::WeaponType *RPG::GetWeaponTypeByID(unsigned ID)
+WeaponCls::WeaponType *RPG::getWeaponTypeByID(unsigned argID)
 {
- for (unsigned i=0; i < vWeaponTypes.size();i++)
+ for (unsigned i=0; i < WeaponTypes.size();i++)
     {
-     if( ID == vWeaponTypes[i].GetID())
-     return &vWeaponTypes[i];
+     if( argID == WeaponTypes[i].getID())
+     return &WeaponTypes[i];
     }
 return NULL;
 }
 //---------------------------------------------------------------------------
-InventoryCls::Inventory *RPG::GetInventoryByID(unsigned ID)
+InventoryCls::Inventory *RPG::getInventoryByID(unsigned argID)
 {
- for (unsigned i=0; i < vInventories.size();i++)
+ for (unsigned i=0; i < Inventories.size();i++)
     {
-     if( ID == vInventories[i].GetID())
-     return &vInventories[i];
+     if( argID == Inventories[i].getID())
+     return &Inventories[i];
     }
 return NULL;
 }
 //---------------------------------------------------------------------------
-void RPG::SetQuiet(int Value)
+InventoryCls::InventoryObject* RPG::getInventoryObjectByID(unsigned argID)
 {
- iQuiet=Value;
+ for (unsigned i=0; i < InventoryObjects.size();i++)
+    {
+     if( argID == InventoryObjects[i]->getInventoryObjectID())
+     return InventoryObjects[i];
+    }
+return NULL;
 }
 //---------------------------------------------------------------------------
-int RPG::GetQuiet()
+void RPG::setQuiet(bool Value)
 {
- return iQuiet;
+ Quiet=Value;
 }
 //---------------------------------------------------------------------------
-bool RPG::MoveObjectIntoInventory(InventoryCls::InventoryObject *Object,unsigned uInventoryID)
+bool RPG::getQuiet()
 {
-    unsigned uOldInventory=Object->GetInventoryID();
+ return Quiet;
+}
+//---------------------------------------------------------------------------
+bool RPG::moveObjectIntoInventory(InventoryCls::InventoryObject *argObject,unsigned argInventoryID)
+{
+    unsigned uOldInventory=argObject->getInventoryID();
     if( uOldInventory != 0)
     {
-    GetInventoryByID(uOldInventory)->TakeFromInventory(*Object);
+    getInventoryByID(uOldInventory)->takeFromInventory(*argObject);
     }
-    if(Object->GetInventoryIndex() != 0)
+    if(argObject->getInventoryIndex() != 0)
     {
-    Object->SetInventoryIndex(0);
+    argObject->setInventoryIndex(0);
     }
     std::vector<InventoryCls::InventoryObject *>::iterator iterInv;
-    if(!GetInventoryByID(uInventoryID)->PutIntoInventory(Object, &iterInv))
+    if(!getInventoryByID(argInventoryID)->putIntoInventory(argObject, &iterInv))
     {
-      GetInventoryByID(uOldInventory)->PutIntoInventory(Object, &iterInv);
+      getInventoryByID(uOldInventory)->putIntoInventory(argObject, &iterInv);
       return false;
     }
  return true;
 }
-bool RPG::SetArmor(unsigned CharacterID,unsigned ArmorID)
+//---------------------------------------------------------------------------
+bool RPG::setArmor(unsigned argCharacterID,unsigned ArmorID)
 {
- using namespace ArmorCls; 
- ArmorType atTemp=GetArmorByID(ArmorID)->GetArmorType();
+ using namespace ArmorCls;
+ ArmorType atTemp=getArmorByID(ArmorID)->getArmorType();
  switch (atTemp)
  {
-  case Head : GetCharacterByID(CharacterID)->SetHeadArmorID(ArmorID);return true;
-  case Chest : GetCharacterByID(CharacterID)->SetChestArmorID(ArmorID);return true;
-  case Shoulder : GetCharacterByID(CharacterID)->SetShoulderArmorID(ArmorID);return true;
-  case Arm : GetCharacterByID(CharacterID)->SetArmArmorID(ArmorID);return true;
-  case Hand : GetCharacterByID(CharacterID)->SetHandArmorID(ArmorID);return true;
-  case Leg : GetCharacterByID(CharacterID)->SetLegArmorID(ArmorID);return true;
-  case Foot : GetCharacterByID(CharacterID)->SetFootArmorID(ArmorID);return true;
+  case Head : getCharacterByID(argCharacterID)->setHeadArmorID(ArmorID);return true;
+  case Chest : getCharacterByID(argCharacterID)->setChestArmorID(ArmorID);return true;
+  case Shoulder : getCharacterByID(argCharacterID)->setShoulderArmorID(ArmorID);return true;
+  case Arm : getCharacterByID(argCharacterID)->setArmArmorID(ArmorID);return true;
+  case Hand : getCharacterByID(argCharacterID)->setHandArmorID(ArmorID);return true;
+  case Leg : getCharacterByID(argCharacterID)->setLegArmorID(ArmorID);return true;
+  case Foot : getCharacterByID(argCharacterID)->setFootArmorID(ArmorID);return true;
  }
  return false;
 }
 //---------------------------------------------------------------------------
+void RPG::ClearAll(bool argReInit)
+{
+//Erase all Objects and create the standard set if needed
+Characters.clear();
+Weapons.clear();
+Armors.clear();
+DamageTypes.clear();
+AmmoTypes.clear();
+WeaponTypes.clear();
+Inventories.clear();
+InventoryObjects.clear();
+Powers.clear();
+
+CharacterHandles=0;
+WeaponHandles=0;
+ArmorHandles=0;
+DamageTypeHandles=0;
+AmmoTypeHandles=0;
+WeaponTypeHandles=0;
+InventoryHandles=0;
+PowerHandles=0;
+
+
+
+if(argReInit)
+{
+ WeaponCls::AmmoType atNone(AmmoTypeHandles++);
+ atNone.setName(translateText("No ammo type",Language));
+ AmmoTypes.push_back(atNone);
+
+ WeaponCls::WeaponType wtNone(WeaponTypeHandles++);
+ wtNone.setName(translateText("No weapon type",Language));
+ WeaponTypes.push_back(wtNone);
+
+ RPG_Misc::DamageType dtNone(DamageTypeHandles++,translateText("No damage type",Language));
+ DamageTypes.push_back(dtNone);
+
+ WeaponCls::Weapon wpnNone(WeaponHandles++,InventoryObjectHandles++,translateText("No weapon",Language));
+ Weapons.push_back(wpnNone);
+
+ ArmorCls::Armor armNone(ArmorHandles++,InventoryObjectHandles++,translateText("No Armor",Language));
+ Armors.push_back(armNone);
+
+ InventoryCls::Inventory invNone(InventoryHandles++,InventoryObjectHandles++,translateText("No inventory",Language));
+ Inventories.push_back(invNone);
+
+}
+}
+//---------------------------------------------------------------------------
 std::vector<CharacterCls::Character> RPG::getCharacters()
 {
- return vCharacters;
+ return Characters;
 }
 //---------------------------------------------------------------------------
 std::vector<WeaponCls::Weapon> RPG::getWeapons()
 {
- return vWeapons;
+ return Weapons;
 }
 //---------------------------------------------------------------------------
 std::vector<ArmorCls::Armor> RPG::getArmors()
 {
- return vArmors;
+ return Armors;
 }
 //---------------------------------------------------------------------------
 std::vector<RPG_Misc::DamageType> RPG::getDamageTypes()
 {
- return vDamageTypes;
+ return DamageTypes;
 }
 //---------------------------------------------------------------------------
 std::vector<WeaponCls::AmmoType> RPG::getAmmoTypes()
 {
- return vAmmoTypes;
+ return AmmoTypes;
 }
 //---------------------------------------------------------------------------
 std::vector<WeaponCls::WeaponType> RPG::getWeaponTypes()
 {
- return vWeaponTypes;
+ return WeaponTypes;
 }
 //---------------------------------------------------------------------------
 std::vector<InventoryCls::Inventory> RPG::getInventories()
 {
- return vInventories;
+ return Inventories;
+}
+//---------------------------------------------------------------------------
+int RPG::setLanguage(std::string argLanguage)
+{
+ //TODO: Check if LanguageFile Exists
+ Language=argLanguage;
+}
+//---------------------------------------------------------------------------
+std::string RPG::getLanguage()
+{
+ return Language;
+}
+//---------------------------------------------------------------------------
+RPG *RPG::getInstance()
+{
+ if(!IsLocked)
+ {
+  IsLocked=true;
+  if(!Instance)
+  {
+    Instance= new RPG();
+  }
+ }
+ return Instance;
+}
+//---------------------------------------------------------------------------
+void RPG::Destroy()
+{
+ delete Instance;
+ Instance=NULL;
+ IsLocked=false;
+}
+//---------------------------------------------------------------------------
+RPGObjectCls::RPGObject *RPG::getCurrentTarget()
+{
+    return CurrentTarget;
+}
+//---------------------------------------------------------------------------
+void RPG::setCurrentTarget(RPGObjectCls::RPGObject *argTarget)
+{
+    CurrentTarget=argTarget;
+}
+//---------------------------------------------------------------------------
+int RPG::addPower(std::string argName,std::string argDescription)
+{
+unsigned NewID=PowerHandles++;
+ PowersCls::Power pTemp(NewID,argName,argDescription);
+
+ Powers.push_back(pTemp);
+ return NewID;
+}
+//---------------------------------------------------------------------------
+PowersCls::Power *RPG::getPowerByID(unsigned argID)
+{
+ for (unsigned i=0; i < Powers.size();i++)
+    {
+     if( argID == Powers[i].getID())
+     return &Powers[i];
+    }
+return NULL;
+}
+//---------------------------------------------------------------------------
+std::vector<PowersCls::Power> RPG::getPowers()
+{
+    return Powers;
+}
+//---------------------------------------------------------------------------
+int RPG::executePower(unsigned argExecutorID,unsigned argPowerID)
+{
+try
+{
+    CharacterCls::Character *Caster=getCharacterByID(argExecutorID);
+    if(Caster->ContainsPower(argPowerID))
+    {
+
+        PowersCls::Power *ExecutedPower = getPowerByID(argPowerID);
+        if(ExecutedPower)
+        {
+            int iCheck=(rand() % 100);
+            if( iCheck > ExecutedPower->getDifficultySum())
+            {
+                std::vector<PowersCls::PowersEffect *> Effects = ExecutedPower->getEffects();
+                ExecutedPower->Execute(Caster);
+                Message(mtCombat,ExecutedPower->getName() + " executed Successfully");
+
+            }
+            else
+            {
+                Message(mtCombat, "Executing " + ExecutedPower->getName() + " failed (" +convertIntegerToString(ExecutedPower->getDifficultySum()) + "% failure chance)");
+                return 1;
+            }
+        }
+    }
+    else
+    {
+    }
+}
+catch(...)
+{
+}
+}
+//---------------------------------------------------------------------------
+RPG::~RPG()
+{
+}
+//---------------------------------------------------------------------------
+void RPG::Message(MessageType argType, std::string argMessage)
+{
+ if(argType == mtGeneral)
+ {
+     if (bShowGeneralMessages)
+     {
+         std::cout << "General: " << argMessage.c_str() << endl;
+     }
+ }
+ else if(argType == mtStatus)
+ {
+     if (bShowStatusMessages)
+     {
+         std::cout << "Status: " << argMessage.c_str() << endl;
+     }
+ }
+ else if(argType == mtCombat)
+ {
+     if (bShowCombatMessages)
+     {
+         std::cout << "Combat: " << argMessage.c_str() << endl;
+     }
+ }
+ else if(argType == mtError)
+ {
+     if (bShowCombatMessages)
+     {
+         std::cout << "Error: " << argMessage.c_str() << endl;
+     }
+ }
 }
 //---------------------------------------------------------------------------
 }
 #pragma package(smart_init)
+
 

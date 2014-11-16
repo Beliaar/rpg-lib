@@ -1,3 +1,26 @@
+//---------------------------------------------------------------------------
+//RPG Library
+//A Library to manage rpg-objects
+//
+//This Library manages all characters, weapons ,armors ,inventories and powers
+//needed for an RPG
+//
+//Copyright (C) 2005  Karsten Bock
+//
+//This library is free software; you can redistribute it and/or
+//modify it under the terms of the GNU Lesser General Public
+//License as published by the Free Software Foundation; either
+//version 2.1 of the License, or (at your option) any later version.
+//
+//This library is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//Lesser General Public License for more details.
+//
+//You should have received a copy of the GNU Lesser General Public
+//License along with this library; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//---------------------------------------------------------------------------
 #include "InventoryClass.h"
 namespace RPGCls
 {
@@ -5,92 +28,79 @@ namespace RPGCls
  {
   using namespace std;
 //---------------------------------------------------------------------------
-InventoryObject::InventoryObject()
+InventoryObject::InventoryObject(unsigned argID,unsigned argInventoryObjectID,std::string argName,std::string argDescription,int argSpaceUsed,int argWeight) :RPGObjectWithAttributes(argID,argName,argDescription)
 {
- uInventoryID=0;
- uInventoryIndex=0;
- iSpaceUsed = 0;
- iWeight=0;
+ InventoryObjectID =argInventoryObjectID;
+ InventoryID=0;
+ InventoryIndex=0;
+ SpaceUsed=argSpaceUsed;
+ Weight=argWeight;
 }
 //---------------------------------------------------------------------------
-InventoryObject::InventoryObject(int SpaceUsed)
+void InventoryObject::setSpaceUsed(int argSpaceUsed)
 {
- uInventoryID=0;
- uInventoryIndex=0;
- iSpaceUsed = SpaceUsed;
- iWeight=0;
+ SpaceUsed=argSpaceUsed;
 }
 //---------------------------------------------------------------------------
-InventoryObject::InventoryObject(int SpaceUsed,int Weight)
+int InventoryObject::getSpaceUsed()
 {
- uInventoryID=0;
- uInventoryIndex=0;
- iSpaceUsed = SpaceUsed;
- iWeight=Weight;
+ return SpaceUsed;
 }
 //---------------------------------------------------------------------------
-void InventoryObject::InventoryObject::SetSpaceUsed(int Value)
+void InventoryObject::setWeight(int argWeight)
 {
-iSpaceUsed = Value;
+ Weight=argWeight;
 }
 //---------------------------------------------------------------------------
-int InventoryObject::InventoryObject::GetSpaceUsed()
+int InventoryObject::getWeight()
 {
- return iSpaceUsed;
+ return Weight;
 }
 //---------------------------------------------------------------------------
-void InventoryObject::InventoryObject::SetWeight(int Value)
+void InventoryObject::setInventoryID(unsigned argInventoryID)
 {
-iWeight = Value;
+ InventoryID=argInventoryID;
 }
 //---------------------------------------------------------------------------
-int InventoryObject::InventoryObject::GetWeight()
+unsigned InventoryObject::getInventoryID()
 {
-return iWeight;
+ return InventoryID;
 }
 //---------------------------------------------------------------------------
-void InventoryObject::SetInventoryID(unsigned InventoryID)
+void InventoryObject::setInventoryIndex(unsigned argInventoryIndex)
 {
- uInventoryID=InventoryID;
+ InventoryIndex=argInventoryIndex;
 }
 //---------------------------------------------------------------------------
-unsigned InventoryObject::GetInventoryID()
+unsigned InventoryObject::getInventoryIndex()
 {
- return uInventoryID;
+ return InventoryIndex;
 }
 //---------------------------------------------------------------------------
-void InventoryObject::SetInventoryIndex(unsigned InventoryIndex)
+unsigned InventoryObject::getInventoryObjectID()
 {
- uInventoryIndex=InventoryIndex;
-}
-//---------------------------------------------------------------------------
-unsigned InventoryObject::GetInventoryIndex()
-{
- return uInventoryIndex;
+ return InventoryObjectID;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-Inventory::Inventory()
+Inventory::Inventory(unsigned argID,unsigned argInventoryObjectID,std::string argName,std::string argDescription,int argmaxStorage,int argSpaceUsed,int argWeight) : InventoryObject(argID,argInventoryObjectID,argName,argDescription,argSpaceUsed,argWeight)
 {
- iMaxStorage=0;
+ maxStorage=argmaxStorage;
+ StorageUsed=0;
+ WeightUsed=0;
 }
 //---------------------------------------------------------------------------
-Inventory::Inventory(int MaxStorage)
+bool Inventory::putIntoInventory(InventoryObject *Object, std::vector<InventoryObject *>::iterator *iterInv)
 {
- iMaxStorage=MaxStorage;
-}
-//---------------------------------------------------------------------------
-bool Inventory::PutIntoInventory(InventoryObject *Object, std::vector<InventoryObject *>::iterator *iterInv)
-{
- //Das Objekt darf keinem anderem Inventar zugewiesen sein, 
+ //Das Objekt darf keinem anderem Inventar zugewiesen sein,
  //ausserdem darf der Platz und Gewicht nicht überschritten werden
- if(Object->GetInventoryID() == 0 && Object->GetInventoryIndex() == 0 && (iStorageUsed + Object->GetSpaceUsed() < iMaxStorage || iMaxStorage==-1) && (iWeightUsed + Object->GetWeight() < iMaxWeight || iMaxWeight == -1))
+ if(Object->getInventoryID() == 0 && Object->getInventoryIndex() == 0 && (maxStorage <= -1 || StorageUsed + Object->getSpaceUsed() < maxStorage) && (maxWeight <= -1 || WeightUsed + Object->getWeight() < maxWeight))
  {
      ObjectsStored.push_back(Object);
-     iStorageUsed+=Object->GetSpaceUsed();
-     iWeightUsed+=Object->GetWeight();
-     Object->SetInventoryID(uID);
-     Object->SetInventoryIndex(ObjectsStored.size());
+     StorageUsed+=Object->getSpaceUsed();
+     WeightUsed+=Object->getWeight();
+     Object->setInventoryID(getID());
+     Object->setInventoryIndex(ObjectsStored.size());
      *iterInv=ObjectsStored.end()-1;
      return true;
  }
@@ -98,62 +108,66 @@ bool Inventory::PutIntoInventory(InventoryObject *Object, std::vector<InventoryO
  {
      return false;
  }
-     
+
 }
 //---------------------------------------------------------------------------
-bool Inventory::TakeFromInventory(InventoryObject Object)
+bool Inventory::takeFromInventory(InventoryObject Object)
 {
- if(Object.GetInventoryID()==uID)
+ if(Object.getInventoryID()==getID())
  {
-  iStorageUsed-=Object.GetSpaceUsed();
-  iWeightUsed-=Object.GetWeight();
-  vector<InventoryObject *>::iterator iterTemp=ObjectsStored.begin() + Object.GetInventoryIndex();
-  (*iterTemp)->SetInventoryID(0);
-  (*iterTemp)->SetInventoryIndex(0);
-  ObjectsStored.erase(ObjectsStored.begin() + Object.GetInventoryIndex());
+  StorageUsed-=Object.getSpaceUsed();
+  WeightUsed-=Object.getWeight();
+  vector<InventoryObject *>::iterator TempIterator=ObjectsStored.begin() + Object.getInventoryIndex();
+  (*TempIterator)->setInventoryID(0);
+  (*TempIterator)->setInventoryIndex(0);
+  ObjectsStored.erase(ObjectsStored.begin() + Object.getInventoryIndex());
   return true;
  }
  return false;
 }
 //---------------------------------------------------------------------------
-void Inventory::SetMaxStorage(int Value)
+void Inventory::setMaxStorage(int argmaxStorage)
 {
- iMaxStorage=Value;
+ maxStorage=argmaxStorage;
 }
 //---------------------------------------------------------------------------
-int Inventory::GetMaxStorage()
+int Inventory::getMaxStorage()
 {
- return iMaxStorage;
+ return maxStorage;
 }
 //---------------------------------------------------------------------------
-int Inventory::GetStorageUsed()
+int Inventory::getStorageUsed()
 {
- return iStorageUsed;
+ return StorageUsed;
 }
 //---------------------------------------------------------------------------
-void Inventory::RecalculateStorageUsed()
+void Inventory::recalculateStorageUsed()
 {
- iStorageUsed=0;
- for(std::vector<InventoryObject *>::iterator iterTemp= ObjectsStored.begin();iterTemp != ObjectsStored.end();iterTemp++)
+ StorageUsed=0;
+ for(std::vector<InventoryObject *>::iterator TempIterator= ObjectsStored.begin();TempIterator != ObjectsStored.end();TempIterator++)
  {
-  iStorageUsed+=(*iterTemp)->GetSpaceUsed(); 
+  StorageUsed+=(*TempIterator)->getSpaceUsed();
  }
 }
 //---------------------------------------------------------------------------
-void Inventory::SetMaxWeight(int MaxWeight)
+void Inventory::setMaxWeight(int maxWeight)
 {
- iMaxWeight=MaxWeight;
+ this->maxWeight=maxWeight;
 }
 //---------------------------------------------------------------------------
-int Inventory::GetMaxWeight()
+int Inventory::getMaxWeight()
 {
- return iMaxWeight;
+ return maxWeight;
 }
 //---------------------------------------------------------------------------
-int Inventory::GetWeightUsed()
+int Inventory::getWeightUsed()
 {
- return iWeightUsed;
+ return WeightUsed;
 }
 //---------------------------------------------------------------------------
- }
+InventoryObject::~InventoryObject()
+{
+}
+//---------------------------------------------------------------------------
+}
 }

@@ -1,0 +1,89 @@
+# depslib dependency file v1.0
+1132515856 o:\projekte\codeblocks\rpglib\armorclass.cpp
+	<string>
+	"ArmorClass.h"
+
+1132516136 o:\projekte\codeblocks\rpglib\include\armorclass.h
+	"Misc.h"
+	"RPGObject.h"
+	"InventoryClass.h"
+
+1132512282 o:\projekte\codeblocks\rpglib\include\misc.h
+	<string>
+	<vector>
+	"RPGObject.h"
+
+1132513178 o:\projekte\codeblocks\rpglib\include\rpgobject.h
+	<string>
+
+1132515712 o:\projekte\codeblocks\rpglib\include\inventoryclass.h
+	"RPGObject.h"
+	<vector>
+
+1132513924 o:\projekte\codeblocks\rpglib\attributesclass.cpp
+	"AttributesClass.h"
+
+1132508742 o:\projekte\codeblocks\rpglib\include\attributesclass.h
+	<string>
+
+1132511302 o:\projekte\codeblocks\rpglib\characterclass.cpp
+	"CharacterClass.h"
+	"Functions.h"
+	<iostream>
+
+1132510686 o:\projekte\codeblocks\rpglib\include\characterclass.h
+	"AttributesClass.h"
+	"RPGObject.h"
+	"InventoryClass.h"
+	<string>
+
+1132513178 o:\projekte\codeblocks\rpglib\include\functions.h
+	<string>
+
+1132513178 o:\projekte\codeblocks\rpglib\functions.cpp
+	"Functions.h"
+	<sstream>
+	<fstream>
+	<stdio.h>
+	<iostream>
+
+1132552910 o:\projekte\codeblocks\rpglib\inventoryclass.cpp
+	"InventoryClass.h"
+
+1132514064 o:\projekte\codeblocks\rpglib\misc.cpp
+	"Misc.h"
+
+1131282286 o:\projekte\codeblocks\rpglib\powersclass.cpp
+	"PowersClass.h"
+
+1131282286 o:\projekte\codeblocks\rpglib\include\powersclass.h
+
+1132519714 o:\projekte\codeblocks\rpglib\rpgclass.cpp
+	"RPGClass.h"
+	"Functions.h"
+	<ctime>
+	<iostream>
+
+1132519390 o:\projekte\codeblocks\rpglib\include\rpgclass.h
+	"PowersClass.h"
+	"AttributesClass.h"
+	"CharacterClass.h"
+	"WeaponClass.h"
+	"ArmorClass.h"
+	"InventoryClass.h"
+	"Misc.h"
+	<string>
+	<vector>
+
+1132515870 o:\projekte\codeblocks\rpglib\include\weaponclass.h
+	<string>
+	"Misc.h"
+	"AttributesClass.h"
+	"InventoryClass.h"
+
+1132513176 o:\projekte\codeblocks\rpglib\rpgobject.cpp
+	"RPGObject.h"
+
+1132516236 o:\projekte\codeblocks\rpglib\weaponclass.cpp
+	"WeaponClass.h"
+

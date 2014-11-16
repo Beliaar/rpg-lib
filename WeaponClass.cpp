@@ -1,3 +1,26 @@
+//---------------------------------------------------------------------------
+//RPG Library
+//A Library to manage rpg-objects
+//
+//This Library manages all characters, weapons ,armors ,inventories and powers
+//needed for an RPG
+//
+//Copyright (C) 2005  Karsten Bock
+//
+//This library is free software; you can redistribute it and/or
+//modify it under the terms of the GNU Lesser General Public
+//License as published by the Free Software Foundation; either
+//version 2.1 of the License, or (at your option) any later version.
+//
+//This library is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//Lesser General Public License for more details.
+//
+//You should have received a copy of the GNU Lesser General Public
+//License along with this library; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//---------------------------------------------------------------------------
 #include "WeaponClass.h"
 namespace RPGCls
 {
@@ -5,154 +28,90 @@ namespace WeaponCls
 {
 
 //---------------------------------------------------------------------------
-AmmoType::AmmoType(unsigned vID)
+AmmoType::AmmoType(unsigned argID,std::string argName,std::string argDescription,unsigned argDamageTypeID) : RPGObject(argID,argName,argDescription)
 {
-  uID=vID;
+  DamageTypeID=argDamageTypeID;
 }
 //---------------------------------------------------------------------------
-AmmoType::AmmoType(unsigned vID,std::string vName)
+void AmmoType::setDamageTypeID(unsigned argDamageTypeID)
 {
-  uID=vID;
-  sName=vName;
+ DamageTypeID= argDamageTypeID;
 }
 //---------------------------------------------------------------------------
-AmmoType::AmmoType(unsigned vID,std::string vName,std::string vDescription)
+unsigned AmmoType::getDamageTypeID()
 {
-  uID=vID;
-  sName=vName;
-  sDescription=vDescription;
+ return DamageTypeID;
 }
 //---------------------------------------------------------------------------
-AmmoType::AmmoType(unsigned vID,std::string vName,std::string vDescription,unsigned vDamageTypeID)        
+WeaponType::WeaponType(unsigned argID,std::string argName,std::string argDescription,unsigned argAmmoTypeID) : RPGObject(argID,argName,argDescription)
 {
-  uID=vID;
-  sName=vName;
-  sDescription=vDescription;
-  uDamageTypeID=vDamageTypeID;
+ AmmoTypeID=argAmmoTypeID;
 }
 //---------------------------------------------------------------------------
-void AmmoType::SetDamageTypeID(unsigned Value)
+void WeaponType::setAmmoTypeID(unsigned argAmmoTypeID)
 {
- uDamageTypeID= Value;
+ AmmoTypeID= AmmoTypeID;
 }
 //---------------------------------------------------------------------------
-unsigned AmmoType::GetDamageTypeID()
+unsigned WeaponType::getAmmoTypeID()
 {
- return uDamageTypeID;
+ return AmmoTypeID;
 }
 //---------------------------------------------------------------------------
-WeaponType::WeaponType(unsigned vID)
+Weapon::Weapon(unsigned argID,unsigned argInventoryObjectID,std::string argName,std::string argDescription,unsigned argTypeID,unsigned argDamageTypeID,int argDamagePerHit,int argSpaceUsed,int argWeight ) : InventoryObject(argID,argInventoryObjectID,argName,argDescription,argSpaceUsed,argWeight)
 {
-  uID=vID;
+ TypeID=argTypeID;
+ DamageTypeID=argDamageTypeID;
+ DamagePerHit=argDamagePerHit;
 }
 //---------------------------------------------------------------------------
-WeaponType::WeaponType(unsigned vID,std::string vName)
+void Weapon::setTypeID(unsigned argTypeID)
 {
- uID=vID;
- sName=vName;
+ TypeID=argTypeID;
 }
 //---------------------------------------------------------------------------
-WeaponType::WeaponType(unsigned vID,std::string vName,std::string vDescription)
+unsigned Weapon::getTypeID()
 {
- uID=vID;
- sName=vName;
- sDescription=vDescription;
+ return TypeID;
 }
 //---------------------------------------------------------------------------
-WeaponType::WeaponType(unsigned vID,std::string vName,std::string vDescription,unsigned vAmmoTypeID)
+void Weapon::setDamageTypeID(unsigned argDamageTypeID)
 {
- uID=vID;
- sName=vName;
- sDescription=vDescription;
- uAmmoTypeID=vAmmoTypeID;
+ DamageTypeID=argDamageTypeID;
 }
 //---------------------------------------------------------------------------
-void WeaponType::SetAmmoTypeID(unsigned Value)
+unsigned Weapon::getDamageTypeID()
 {
- uAmmoTypeID= Value;
+ return DamageTypeID;
 }
 //---------------------------------------------------------------------------
-unsigned WeaponType::GetAmmoTypeID()
+void Weapon::setDamagePerHit(int argDamagePerHit)
 {
- return uAmmoTypeID;
+ DamagePerHit=argDamagePerHit;
 }
 //---------------------------------------------------------------------------
-Weapon::Weapon(unsigned vID)
+int Weapon::getDamagePerHit()
 {
- uID=vID;
+ return DamagePerHit;
 }
 //---------------------------------------------------------------------------
-Weapon::Weapon(unsigned vID,std::string vName)
+unsigned RPGObjectWithWeapon::getWeaponID()
 {
- uID=vID;
- sName=vName;
+    return WeaponID;
 }
 //---------------------------------------------------------------------------
-Weapon::Weapon(unsigned vID,std::string vName,unsigned vTypeID)
+void RPGObjectWithWeapon::setWeaponID(unsigned argWeaponID)
 {
- uID=vID;
- sName=vName;
- uTypeID=vTypeID;
+    WeaponID=argWeaponID;
 }
 //---------------------------------------------------------------------------
-Weapon::Weapon(unsigned vID,std::string vName,unsigned vTypeID,unsigned vDamageTypeID)
+RPGObjectWithWeapon::RPGObjectWithWeapon(unsigned argID,std::string argName,std::string argDescription) : RPGObject(argID,argName,argDescription)
 {
- uID=vID;
- sName=vName;
- uTypeID=vTypeID;
- uDamageTypeID=vDamageTypeID;
 }
 //---------------------------------------------------------------------------
-Weapon::Weapon(unsigned vID,std::string vName,unsigned vTypeID,unsigned vDamageTypeID,int vDamagePerHit )
+RPGObjectWithWeapon::~RPGObjectWithWeapon()
 {
- uID=vID;
- sName=vName;
- uTypeID=vTypeID;
- uDamageTypeID=vDamageTypeID;
- iDamagePerHit=vDamagePerHit;
 }
 //---------------------------------------------------------------------------
-Weapon::Weapon(unsigned vID,std::string vName,unsigned vTypeID,unsigned vDamageTypeID,int vDamagePerHit, int vWeight )
-{
- uID=vID;
- sName=vName;
- uTypeID=vTypeID;
- uDamageTypeID=vDamageTypeID;
- iDamagePerHit=vDamagePerHit;
- iWeight=vWeight;
-}
-//---------------------------------------------------------------------------
-void Weapon::SetTypeID(unsigned Value)
-{
- uTypeID=Value;
-}
-//---------------------------------------------------------------------------
-unsigned Weapon::GetTypeID()
-{
- return uTypeID;
-}
-//---------------------------------------------------------------------------
-void Weapon::SetDamageTypeID(unsigned Value)
-{
- uDamageTypeID=Value;
-}
-//---------------------------------------------------------------------------
-unsigned Weapon::GetDamageTypeID()
-{
- return uDamageTypeID;
-}
-//---------------------------------------------------------------------------
-void Weapon::SetDamagePerHit(int Value)
-{
- iDamagePerHit=Value;
-}
-//---------------------------------------------------------------------------
-int Weapon::GetDamagePerHit()
-{
- return iDamagePerHit;
-}
-//---------------------------------------------------------------------------
-
-
 }
 }

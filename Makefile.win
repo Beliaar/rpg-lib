@@ -1,0 +1,58 @@
+# Project: RPG
+# Makefile created by Dev-C++ 4.9.9.2
+
+CPP  = g++.exe
+CC   = gcc.exe
+WINDRES = windres.exe
+RES  = 
+OBJ  = ArmorClass.o AttributesClass.o CharacterClass.o Functions.o InventoryClass.o misc.o PowersClass.o RPGClass.o RPGObject.o WeaponClass.o $(RES)
+LINKOBJ  = ArmorClass.o AttributesClass.o CharacterClass.o Functions.o InventoryClass.o misc.o PowersClass.o RPGClass.o RPGObject.o WeaponClass.o $(RES)
+LIBS =  -L"d:/Dev-Cpp/lib" -lgmon  
+INCS =  -I"d:/Dev-Cpp/include"  -I"./include" 
+CXXINCS =  -I"d:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"d:/Dev-Cpp/include/c++/3.4.2/backward"  -I"d:/Dev-Cpp/include/c++/3.4.2/mingw32"  -I"d:/Dev-Cpp/include/c++/3.4.2"  -I"d:/Dev-Cpp/include"  -I"./include" 
+BIN  = lib/libRPG.a
+CXXFLAGS = $(CXXINCS)  
+CFLAGS = $(INCS)  
+RM = rm -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before lib/libRPG.a all-after
+
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(LINKOBJ)
+	ar r $(BIN) $(LINKOBJ)
+	ranlib $(BIN)
+
+ArmorClass.o: ArmorClass.cpp d:/Dev-Cpp/include/c++/3.4.2/string   ./include/ArmorClass.h ./include/Misc.h   d:/Dev-Cpp/include/c++/3.4.2/vector ./include/RPGObject.h   ./include/InventoryClass.h
+	$(CPP) -c ArmorClass.cpp -o ArmorClass.o $(CXXFLAGS)
+
+AttributesClass.o: AttributesClass.cpp ./include/AttributesClass.h   d:/Dev-Cpp/include/c++/3.4.2/string
+	$(CPP) -c AttributesClass.cpp -o AttributesClass.o $(CXXFLAGS)
+
+CharacterClass.o: CharacterClass.cpp ./include/CharacterClass.h   ./include/AttributesClass.h d:/Dev-Cpp/include/c++/3.4.2/string   ./include/RPGObject.h ./include/InventoryClass.h   d:/Dev-Cpp/include/c++/3.4.2/vector ./include/Functions.h   d:/Dev-Cpp/include/c++/3.4.2/iostream
+	$(CPP) -c CharacterClass.cpp -o CharacterClass.o $(CXXFLAGS)
+
+Functions.o: Functions.cpp ./include/Functions.h   d:/Dev-Cpp/include/c++/3.4.2/string   d:/Dev-Cpp/include/c++/3.4.2/sstream   d:/Dev-Cpp/include/c++/3.4.2/fstream   d:/Dev-Cpp/include/c++/3.4.2/iostream
+	$(CPP) -c Functions.cpp -o Functions.o $(CXXFLAGS)
+
+InventoryClass.o: InventoryClass.cpp ./include/InventoryClass.h   ./include/RPGObject.h d:/Dev-Cpp/include/c++/3.4.2/string   d:/Dev-Cpp/include/c++/3.4.2/vector
+	$(CPP) -c InventoryClass.cpp -o InventoryClass.o $(CXXFLAGS)
+
+misc.o: misc.cpp ./include/Misc.h d:/Dev-Cpp/include/c++/3.4.2/string   d:/Dev-Cpp/include/c++/3.4.2/vector ./include/RPGObject.h
+	$(CPP) -c misc.cpp -o misc.o $(CXXFLAGS)
+
+PowersClass.o: PowersClass.cpp ./include/PowersClass.h
+	$(CPP) -c PowersClass.cpp -o PowersClass.o $(CXXFLAGS)
+
+RPGClass.o: RPGClass.cpp ./include/RPGClass.h ./include/PowersClass.h   ./include/AttributesClass.h d:/Dev-Cpp/include/c++/3.4.2/string   ./include/CharacterClass.h ./include/RPGObject.h   ./include/InventoryClass.h d:/Dev-Cpp/include/c++/3.4.2/vector   ./include/WeaponClass.h ./include/Misc.h ./include/ArmorClass.h   ./include/Functions.h d:/Dev-Cpp/include/c++/3.4.2/iostream
+	$(CPP) -c RPGClass.cpp -o RPGClass.o $(CXXFLAGS)
+
+RPGObject.o: RPGObject.cpp ./include/RPGObject.h   d:/Dev-Cpp/include/c++/3.4.2/string
+	$(CPP) -c RPGObject.cpp -o RPGObject.o $(CXXFLAGS)
+
+WeaponClass.o: WeaponClass.cpp ./include/WeaponClass.h   d:/Dev-Cpp/include/c++/3.4.2/string ./include/Misc.h   d:/Dev-Cpp/include/c++/3.4.2/vector ./include/RPGObject.h   ./include/AttributesClass.h ./include/InventoryClass.h
+	$(CPP) -c WeaponClass.cpp -o WeaponClass.o $(CXXFLAGS)

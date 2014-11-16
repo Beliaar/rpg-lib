@@ -1,4 +1,26 @@
 //---------------------------------------------------------------------------
+//RPG Library
+//A Library to manage rpg-objects
+//
+//This Library manages all characters, weapons ,armors ,inventories and powers
+//needed for an RPG
+//
+//Copyright (C) 2005  Karsten Bock
+//
+//This library is free software; you can redistribute it and/or
+//modify it under the terms of the GNU Lesser General Public
+//License as published by the Free Software Foundation; either
+//version 2.1 of the License, or (at your option) any later version.
+//
+//This library is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//Lesser General Public License for more details.
+//
+//You should have received a copy of the GNU Lesser General Public
+//License along with this library; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//---------------------------------------------------------------------------
 
 #include <string>
 #include "ArmorClass.h"
@@ -9,139 +31,127 @@ namespace RPGCls
 namespace ArmorCls
 {
 //---------------------------------------------------------------------------
-Armor::Armor(int vID)
+Armor::Armor(unsigned argID,unsigned argInventoryObjectID,std::string argName,std::string argDescription,ArmorType argArmorType,int argSpaceUsed,int argWeight) : InventoryObject(argID,argInventoryObjectID,argName,argDescription,argSpaceUsed,argWeight)
 {
-    uID=vID;
-    sName="";
-    sDescription="";
-    iArmorValue=0;
-    atType=All;
-}            
-//---------------------------------------------------------------------------
-Armor::Armor(int vID,std::string vName)
-{
-    uID=vID;
-    sName=vName;
-    sDescription="";
-    iArmorValue=0;
-    atType=All;
-}            
-//---------------------------------------------------------------------------
-Armor::Armor(int vID,std::string vName,std::string vDescription)
-{
-    uID=vID;
-    sName=vName;
-    sDescription=vDescription;
-    iArmorValue=0;
-    atType=All;
-}
-//---------------------------------------------------------------------------
-Armor::Armor(int vID,std::string vName,std::string vDescription,ArmorType vArmorType)
-{
-    uID=vID;
-    sName=vName;
-    sDescription=vDescription;
-    atType=vArmorType;
-    iArmorValue=0;
+    Type=argArmorType;
+    ArmorValue=0;
 
 }
-void Armor::SetArmorValue(int Value)
-{
-    iArmorValue=Value;
-}            
 //---------------------------------------------------------------------------
-int Armor::GetArmorValue()
+void Armor::setArmorValue(int argArmorValue)
 {
-    return iArmorValue;
+    ArmorValue=argArmorValue;
 }
 //---------------------------------------------------------------------------
-void Armor::SetArmorType(ArmorType Value)
+int Armor::getArmorValue()
 {
- atType=Value;
+    return ArmorValue;
 }
 //---------------------------------------------------------------------------
-ArmorType Armor::GetArmorType()
+void Armor::setArmorType(ArmorType argType)
 {
- return atType;
+ Type=argType;
 }
 //---------------------------------------------------------------------------
-void Armor::AddWeakness(int DamageTypeID)
+ArmorType Armor::getArmorType()
 {
- vWeaknesses.push_back(DamageTypeID);
-}            
+ return Type;
+}
 //---------------------------------------------------------------------------
-void Armor::DeleteWeakness(int DamageTypeID)
+void Armor::addWeakness(int argDamageTypeID)
 {
- for(vector<int>::iterator iIter=vWeaknesses.begin(); iIter != vWeaknesses.end(); iIter++)
+ Weaknesses.push_back(argDamageTypeID);
+}
+//---------------------------------------------------------------------------
+void Armor::deleteWeakness(int argDamageTypeID)
+{
+ for(vector<int>::iterator iIter=Weaknesses.begin(); iIter != Weaknesses.end(); iIter++)
  {
-  if (DamageTypeID==*iIter)
+  if (argDamageTypeID==*iIter)
   {
-     vWeaknesses.erase(iIter);
-     return;     
+     Weaknesses.erase(iIter);
+     return;
   }
  }
 }
 //---------------------------------------------------------------------------
-void Armor::DeleteWeaknessAll(int DamageTypeID)
+void Armor::deleteWeaknessAll(int argDamageTypeID)
 {
- for(vector<int>::iterator iIter=vWeaknesses.begin(); iIter != vWeaknesses.end(); iIter++)
+ for(vector<int>::iterator iIter=Weaknesses.begin(); iIter != Weaknesses.end(); iIter++)
  {
-  if (DamageTypeID==*iIter)
+  if (argDamageTypeID==*iIter)
   {
-     vWeaknesses.erase(iIter);
+     Weaknesses.erase(iIter);
   }
  }
 }
 //---------------------------------------------------------------------------
-void Armor::AddStrength(int DamageTypeID)
+void Armor::addStrength(int argDamageTypeID)
 {
-     vStrengths.push_back(DamageTypeID);
-}            
+     Strengths.push_back(argDamageTypeID);
+}
 //---------------------------------------------------------------------------
-void Armor::DeleteStrength(int DamageTypeID)
+void Armor::deleteStrength(int argDamageTypeID)
 {
- for(vector<int>::iterator iIter=vStrengths.begin(); iIter != vStrengths.end(); iIter++)
+ for(vector<int>::iterator iIter=Strengths.begin(); iIter != Strengths.end(); iIter++)
  {
-  if (DamageTypeID==*iIter)
+  if (argDamageTypeID==*iIter)
   {
-     vStrengths.erase(iIter);
-     return;     
+     Strengths.erase(iIter);
+     return;
   }
  }
 }
 //---------------------------------------------------------------------------
-void Armor::DeleteStrengthAll(int DamageTypeID)
+void Armor::deleteStrengthAll(int argDamageTypeID)
 {
- for(vector<int>::iterator iIter=vStrengths.begin(); iIter != vStrengths.end(); iIter++)
+ for(vector<int>::iterator iIter=Strengths.begin(); iIter != Strengths.end(); iIter++)
  {
-  if (DamageTypeID==*iIter)
+  if (argDamageTypeID==*iIter)
   {
-     vStrengths.erase(iIter);
+     Strengths.erase(iIter);
   }
  }
 }
 //---------------------------------------------------------------------------
-bool Armor::ContainsWeakness(int DamageTypeID)
+bool Armor::containsWeakness(int argDamageTypeID)
 {
- for(vector<int>::iterator iIter=vWeaknesses.begin(); iIter != vWeaknesses.end(); iIter++)
+ for(vector<int>::iterator iIter=Weaknesses.begin(); iIter != Weaknesses.end(); iIter++)
  {
-  if (DamageTypeID==*iIter)
-     return true;      
+  if (argDamageTypeID==*iIter)
+     return true;
  }
  return false;
-}            
+}
 //---------------------------------------------------------------------------
-bool Armor::ContainsStrength(int DamageTypeID)
+bool Armor::containsStrength(int argDamageTypeID)
 {
- for(vector<int>::iterator iIter=vStrengths.begin(); iIter != vStrengths.end(); iIter++)
+ for(vector<int>::iterator iIter=Strengths.begin(); iIter != Strengths.end(); iIter++)
  {
-  if (DamageTypeID==*iIter)
-     return true;      
+  if (argDamageTypeID==*iIter)
+     return true;
  }
  return false;
-}            
+}
 //---------------------------------------------------------------------------
-
+RPGObjectWithArmor::RPGObjectWithArmor(unsigned argID,std::string argName,std::string argDescription) : RPGObject(argID,argName,argDescription)
+{
+}
+//---------------------------------------------------------------------------
+unsigned RPGObjectWithArmor::getArmorID()
+{
+    return ArmorID;
+}
+//---------------------------------------------------------------------------
+void RPGObjectWithArmor::setArmorID(unsigned argArmorID)
+{
+    ArmorID=argArmorID;
+}
+//---------------------------------------------------------------------------
+RPGObjectWithArmor::~RPGObjectWithArmor()
+{
+}
+//---------------------------------------------------------------------------
 }
 }
 

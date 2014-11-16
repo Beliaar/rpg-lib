@@ -1,0 +1,5 @@
+Formeln:
+Magiepunkte=Intelligenz * (3/2)
+Lebenspunkte=Konsitution * (4/3)
+Schadenspunkte=Waffenschaden * (Stärke-Waffengewicht)
+Trefferchance=Geschicklichkeit* (Stärke-Waffengewicht)
